@@ -3,10 +3,13 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const mongooseFile = require('./config/connection.js')
 
 var userRouter = require('./routes/user');
 var adminRouter = require('./routes/admin');
 var express     = require( 'express');
+const session = require('express-session');
+const bodyParser = require('body-parser');
 var hbs         = require( 'express-handlebars' );
 
 
@@ -19,6 +22,16 @@ var HBS = hbs.create( {
   partialsDir: __dirname + '/views/partials/'
 } ) ;
 app.engine('hbs',HBS.engine)
+
+//connect to db
+mongooseFile.connectDB()
+
+// Session configuration
+app.use(session({
+  secret: 'MI_Key',
+  resave: true,
+  saveUninitialized: true, // Example: session expires in 24 hours
+}));
 
 
 // view engine setup

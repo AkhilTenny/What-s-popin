@@ -4,6 +4,7 @@ var router = express.Router();
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
+ 
 });
 
 
@@ -12,7 +13,19 @@ router.get('/sign-up',function(req,res){
 })
 
 router.get('/interest',function(req,res){
+  
   res.render("users/signUp/interest")
+})
+
+router.post('/sign-up',function(req,res){
+  if(req.body.password == req.body.confirmPassword){
+    req.session.username = req.body;
+    req.session.save()
+    console.log("session",req.session)
+    res.redirect('/interest')
+
+    
+  }
 })
 
 module.exports = router;
