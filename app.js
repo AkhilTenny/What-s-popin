@@ -4,6 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const mongooseFile = require('./config/connection.js')
+const axios = require('axios');
 
 var userRouter = require('./routes/user');
 var adminRouter = require('./routes/admin');
@@ -14,6 +15,9 @@ var hbs         = require( 'express-handlebars' );
 
 
 var app = express();
+
+// Middleware to parse JSON bodies
+app.use(bodyParser.json());
 
 var HBS = hbs.create( { 
   extname: 'hbs', 
@@ -33,6 +37,7 @@ app.use(session({
   saveUninitialized: true, // Example: session expires in 24 hours
 }));
 
+app.use(express.json());
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

@@ -1,3 +1,6 @@
+
+  // If using Node.js
+
 $(document).ready(function(){
   $("#profilePic").click(function(){
     console.log("haida")
@@ -6,22 +9,35 @@ $(document).ready(function(){
   
 });
 
-function handleClick(){
-  let userInterests=[]
-  function indClickSub(id){
+class handleClick{
+  constructor(){
+    this.userInterests = [];
+  }
+   indClickSub(id){
     if($('#'+id).css('visibility')==="visible"){
-      userInterests.pop(id)
+      this.userInterests.pop(id)
       $('#'+id).css('visibility',"hidden");
     }else{
-      userInterests.push(id)
+      this.userInterests.push(id)
       $('#'+id).css('visibility',"visible");
       }
-      $('#indCount').html(userInterests.length)
+      $('#indCount').html(this.userInterests.length)
+    }
+     intSubmit(){
+      $.ajax({
+        type:"POST",
+        url:"/save-user",
+        data: {interests:JSON.stringify(this.userInterests)},
+        success:function(value){
+          console.log("success")
+        }
+        
+
+      })
     }
    
   
-  this.indClickSub = indClickSub;
 }
 
-const indClick = new handleClick();
+window.indClick = new handleClick();
 
