@@ -6,9 +6,16 @@
       <button class="btn btn-outline-success" type="submit">Search</button>
     </form>
     <div class="icon-div">
+{{#if user}}
       <div class="profile-div my-card ">
-        <img class="profile-div-img" id="profilePic" src="images/defult-dp-icon.jpg" alt="">
+        <a href="/profile"><img class="profile-div-img" id="profilePic" src="images/defult-dp-icon.jpg" alt=""></a>
+      </div> 
+      
+      {{else}}
+       <div class="profile-div my-card ">
+        <img class="profile-div-img" id="DummieProPic" src="images/defult-dp-icon.jpg" alt="">
       </div>
+{{/if}}
     </div>
   </div>
 </nav>
@@ -22,14 +29,14 @@
       </div>
       <div class="modal-body">
         <h3 class="text-center">Login</h3>
-        <form role="form">
+        <form role="form" method="post" action="/sign-in">
           <div class="form-group">
-            <label for="usrname">Username</label>
-            <input type="text" class="form-control" id="usrname" placeholder="Enter email" style="border-radius:20px;">
+            <label for="username">Username</label>
+            <input name="username" type="text" class="form-control" id="username" placeholder="Enter email" style="border-radius:20px;">
           </div>
           <div class="form-group mt-3">
             <label for="password">Password</label>
-            <input type="password" class="form-control" id="password" placeholder="Enter password" style="border-radius:20px;">
+            <input name="password" type="password" class="form-control" id="password" placeholder="Enter password" style="border-radius:20px;">
           </div>
           <div class="mt-5 " style="display:flex;justify-content: space-between;" >
             <button type="button" onclick="window.location.href='/sign-up'"class="btn btn-primary" style="border-radius:20px;">Create Account</button>

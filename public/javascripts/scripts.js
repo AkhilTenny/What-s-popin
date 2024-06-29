@@ -2,8 +2,8 @@
   // If using Node.js
 
 $(document).ready(function(){
-  $("#profilePic").click(function(){
-    console.log("haida")
+  $("#DummieProPic").click(function(){
+  
     $("#myModal").modal("show");
   });
   
@@ -29,7 +29,7 @@ class handleClick{
         url:"/save-user",
         data: {interests:JSON.stringify(this.userInterests)},
         success:function(value){
-          console.log("success")
+          
         }
         
 

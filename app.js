@@ -4,14 +4,16 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const mongooseFile = require('./config/connection.js')
-const axios = require('axios');
+const passport = require('passport');
 
 var userRouter = require('./routes/user');
 var adminRouter = require('./routes/admin');
+var authRouter = require('./routes/auth');
 var express     = require( 'express');
 const session = require('express-session');
 const bodyParser = require('body-parser');
 var hbs         = require( 'express-handlebars' );
+const MongoStore = require('connect-mongo');
 
 
 var app = express();
@@ -30,11 +32,20 @@ app.engine('hbs',HBS.engine)
 //connect to db
 mongooseFile.connectDB()
 
+// Use passport.initialize() before routes
+
+app.use(passport.initialize()); 
+
+
 // Session configuration
 app.use(session({
-  secret: 'MI_Key',
+  secret: 'MY_Key',
   resave: true,
-  saveUninitialized: true, // Example: session expires in 24 hours
+  saveUninitialized: true, 
+  store:MongoStore.create({
+    mongoUrl:"mongodb://localhost:27017/WhatsPopin",
+    collectionName:"session"
+  })
 }));
 
 app.use(express.json());
@@ -51,6 +62,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/admin', adminRouter);
 app.use('/', userRouter);
+app.use('/',authRouter)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

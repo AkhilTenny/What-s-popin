@@ -1,10 +1,12 @@
 var express = require('express');
 var router = express.Router();
+var passport = require("passport")
 var userHealpers = require('../helpers/userHelper.js')
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+  res.render('index', { user:req.session });
+  console.log(req.session);
  
 });
 
@@ -21,11 +23,26 @@ router.post('/sign-up',function(req,res){
   if(req.body.password == req.body.confirmPassword){
     req.session.userData = req.body;
     req.session.save()
-    console.log("session",req.session)
+   
     res.redirect('/interest')
 
     
   }
+})
+router.get("/profile",function(req,res){
+    res.render("users/profile-panel")
+})
+
+router.post("/logout",function(req,res,next){
+  console.log('hai')
+    req.logout(function(err){
+      if(err)return next(err)
+      else{
+          res.redirect('/')
+      }
+    }
+  
+  )
 })
 
 router.post("/save-user",function(req,res){
