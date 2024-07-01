@@ -5,6 +5,9 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const mongooseFile = require('./config/connection.js')
 const passport = require('passport');
+const {GridFsStorage} = require('multer-gridfs-storage')
+const multer = require('multer');
+const methodOverride = require('method-override');
 
 var userRouter = require('./routes/user');
 var adminRouter = require('./routes/admin');
@@ -79,5 +82,22 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+
+const storage = new GridFsStorage({
+  url: 'mongodb://localhost:27017/WhatsPopin',
+  file: (req,file)=>{
+    return new Promise((resolve,reject)=>{
+      const filename = "hello";
+      const fileInfo = {
+        filename:filename,
+        bucketName:"uploads"
+      };
+      resolve(fileInfo)
+    })
+  }
+})
+
+const upload = multer({ storage })
 
 module.exports = app;

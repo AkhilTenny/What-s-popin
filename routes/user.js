@@ -5,8 +5,7 @@ var userHealpers = require('../helpers/userHelper.js')
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { user:req.session });
-  console.log(req.session);
+  res.render('index', { user: req.session});
  
 });
 
@@ -30,7 +29,7 @@ router.post('/sign-up',function(req,res){
   }
 })
 router.get("/profile",function(req,res){
-    res.render("users/profile-panel")
+    res.render("users/profile-panel", { user: req.session})
 })
 
 router.post("/logout",function(req,res,next){
@@ -52,6 +51,15 @@ router.post("/save-user",function(req,res){
   
   userHealpers.addUser(userDatas,interests)
 
+})
+
+router.get("/add-post/:crytoId",function(req,res){
+  console.log(req.params.crytoId)
+  res.render('users/new-post',{ user: req.session})
+})
+
+router.post("/upload/:crytoId",function(req,res){
+  
 })
 
 module.exports = router;

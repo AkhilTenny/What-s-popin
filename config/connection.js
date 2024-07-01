@@ -12,6 +12,20 @@ const connectDB = async () => {
   }
 };
 
+const connectGFS = mongoose.createConnection(mongoURI,{
+  useNewUrlParser:true,
+  useUnifiedTopology:true
+});
+
+let gfs;
+
+connectGFS.once('open', ()=>{
+  gfs = new mongoose.mongo.GridFSBucket(connectGFS.db,{
+    bucketName:"uploads"
+  });
+  console.log('GridFS initialized');
+})
+
 module.exports = {
-  URL,connectDB
+  URL,connectDB,
 }

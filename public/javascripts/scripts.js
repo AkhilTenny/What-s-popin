@@ -2,7 +2,7 @@
   // If using Node.js
 
 $(document).ready(function(){
-  $("#DummieProPic").click(function(){
+  $("#profilePic").click(function(){
   
     $("#myModal").modal("show");
   });

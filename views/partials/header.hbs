@@ -6,15 +6,17 @@
       <button class="btn btn-outline-success" type="submit">Search</button>
     </form>
     <div class="icon-div">
-{{#if user}}
-      <div class="profile-div my-card ">
-        <a href="/profile"><img class="profile-div-img" id="profilePic" src="images/defult-dp-icon.jpg" alt=""></a>
-      </div> 
+{{#if user.passport.user}}
+ <div class="profile-div my-card ">
+       <a href="/profile"><img class="profile-div-img" id="DummieProPic" src="images/defult-dp-icon.jpg" alt=""></a> 
+       <h6>{{user.passport.user.username}}</h6>
+      </div>
+      
       
       {{else}}
        <div class="profile-div my-card ">
-        <img class="profile-div-img" id="DummieProPic" src="images/defult-dp-icon.jpg" alt="">
-      </div>
+     <img class="profile-div-img" id="profilePic" src="images/defult-dp-icon.jpg" alt="">
+      </div> 
 {{/if}}
     </div>
   </div>

@@ -1,3 +1,14 @@
-<form action="/logout" method="post">
+<div class="container">
+  <form action="/logout" method="post">
 <button type="submit">logout</button>
 </form> 
+
+
+<div class="card" style="width: 18rem;">
+  
+  <div class="card-body">
+    <img width="50px" src="./images/add-post.png" alt="">    
+    <a href="/add-post/{{user.passport.user.cryptoId}}" class="btn btn-primary">add POST</a>
+  </div>
+</div>
+</div>
