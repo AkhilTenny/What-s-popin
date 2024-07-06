@@ -53,13 +53,11 @@ router.post("/save-user",function(req,res){
 
 })
 
-router.get("/add-post/:crytoId",function(req,res){
+router.get("/add-post",function(req,res){
   console.log(req.params.crytoId)
   res.render('users/new-post',{ user: req.session})
 })
 
-router.post("/upload/:crytoId",function(req,res){
-  
-})
+
 
 module.exports = router;

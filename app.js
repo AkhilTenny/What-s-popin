@@ -5,13 +5,13 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const mongooseFile = require('./config/connection.js')
 const passport = require('passport');
-const {GridFsStorage} = require('multer-gridfs-storage')
-const multer = require('multer');
-const methodOverride = require('method-override');
+
 
 var userRouter = require('./routes/user');
 var adminRouter = require('./routes/admin');
 var authRouter = require('./routes/auth');
+var postRouter = require('./routes/post')
+
 var express     = require( 'express');
 const session = require('express-session');
 const bodyParser = require('body-parser');
@@ -65,7 +65,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/admin', adminRouter);
 app.use('/', userRouter);
-app.use('/',authRouter)
+app.use('/',authRouter);
+app.use('/',postRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -84,20 +85,5 @@ app.use(function(err, req, res, next) {
 });
 
 
-const storage = new GridFsStorage({
-  url: 'mongodb://localhost:27017/WhatsPopin',
-  file: (req,file)=>{
-    return new Promise((resolve,reject)=>{
-      const filename = "hello";
-      const fileInfo = {
-        filename:filename,
-        bucketName:"uploads"
-      };
-      resolve(fileInfo)
-    })
-  }
-})
-
-const upload = multer({ storage })
 
 module.exports = app;
