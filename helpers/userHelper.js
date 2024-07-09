@@ -6,6 +6,7 @@ const userSchema = new mongoose.Schema({
   username:String,
   emailId:String,
   password:String,
+  bio:String,
   cryptoId:String,
   interests:{
     type:[String],
@@ -53,8 +54,34 @@ async function authenticateUser(username,password){
  }
 }
 
+function getUserInfo(userCryptoId){
+  return new Promise(async(resolve,reject)=>{
+    const userInfo = await userModel.findOne({cryptoId:userCryptoId})
+    resolve(userInfo)
+  })
+}
+function changeUserBio(userCryptoId,newBio){
+  return new Promise(async(resolve,reject)=>{
+    console.log(await userModel.find())
+    const updatedUser = await userModel.findOneAndUpdate({cryptoId:userCryptoId},{bio:newBio},{ new: true })
+    console.log(newBio)
+    resolve(updatedUser)
+  })
+}
+function changeUsername(userCryptoId,newUsername){
+  return new Promise(async(resolve,reject)=>{
+    console.log(userCryptoId)
+
+    const updatedUser = await userModel.findOneAndUpdate({cryptoId:userCryptoId},{username:newUsername},{ new: true })
+    console.log(updatedUser)
+    resolve(updatedUser)
+  })
+}
 
 module.exports= {
     addUser,
-    authenticateUser
+    authenticateUser,
+    getUserInfo,
+    changeUserBio,
+    changeUsername
   }

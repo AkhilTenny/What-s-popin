@@ -39,5 +39,7 @@ class handleClick{
   
 }
 
+
+
 window.indClick = new handleClick();
 

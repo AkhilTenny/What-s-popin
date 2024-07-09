@@ -14,7 +14,7 @@ passport.use( new LocalStrategy( async function verify (username,password,callba
       return callback(null,user)
     }
 }))
-
+ 
 passport.serializeUser(function(user,callback){
   callback(null,{username : user.username, emailId:user.emailId, cryptoId:user.cryptoId})
 })
@@ -26,6 +26,7 @@ router.post('/sign-in',passport.authenticate('local',{
 
   successRedirect: '/',
   failureRedirect: '/login'
+  
 }))
 
 module.exports = router;
