@@ -1,0 +1,116 @@
+<div class="container">
+  <div class="row">
+  <div class="dp-edit-img-div">
+    <img src="" id="image" alt="">
+  </div>
+  <form id="input-form"  enctype="multipart/form-data">
+  <div class="dp-edit-input-div">
+  <input accept="image/*" name="file" class="form-control form-control-lg" id="imageInput" type="file" >
+  </div>
+
+  <div class="dp-edit-submit-div">
+    <button id="submit-dp" type="submit" class="btn btn-secondary mt-5">Save Changes</button>
+  </div>
+  </form>
+   </div>
+</div>
+
+<script>
+    
+    document.getElementById('input-form').addEventListener("submit",async(event)=>{
+        console.log('hai')
+        event.preventDefault(); 
+        
+        const fileInput = document.getElementById('imageInput');
+        const file = fileInput.files[0];
+        
+
+        if(!file){
+            alert("please input a Image");
+        }else{
+            const imageUrl = URL.createObjectURL(file);
+            const aspectRatio = 1;
+        
+        try{
+
+            const blob = await crop(imageUrl,aspectRatio);
+            
+            uploadCroppedImage(blob)            
+        }catch(error){
+            console.log("eer on try catch",error)
+        }
+        }
+    })
+    //function used to crop the image to the given aspect ratio and convert it to blob format
+    function crop(url, aspectRatio) {
+    return new Promise((resolve) => {
+
+        const inputImage = new Image();
+        inputImage.crossOrigin = "Anonymous"; 
+
+        inputImage.onload = () => {
+            const inputWidth = inputImage.naturalWidth;
+            const inputHeight = inputImage.naturalHeight;
+            const inputImageAspectRatio = inputWidth / inputHeight;
+            let outputWidth = inputWidth;
+            let outputHeight = inputHeight;
+
+            if (inputImageAspectRatio > aspectRatio) {
+                outputWidth = inputHeight * aspectRatio;
+            } else if (inputImageAspectRatio < aspectRatio) {
+                outputHeight = inputWidth / aspectRatio;
+            }
+
+            const outputX = (outputWidth - inputWidth) * 0.5;
+            const outputY = (outputHeight - inputHeight) * 0.5;
+            const outputImage = document.createElement('canvas');
+            outputImage.width = outputWidth;
+            outputImage.height = outputHeight;
+
+            const ctx = outputImage.getContext('2d');
+            ctx.drawImage(inputImage, outputX, outputY);
+
+            outputImage.toBlob((blob) => {
+                resolve(blob);
+            }, 'image/jpeg'); 
+        };
+        inputImage.src = url;
+
+
+    });
+    
+}async function uploadCroppedImage(blob) {
+    const formData = new FormData();
+    formData.append('file', blob, 'cropped.jpg'); 
+
+    const response = await fetch('/edit-dp', {
+        method: 'POST',
+        body: formData,
+    });
+
+    if (response.ok) {
+        console.log('Image uploaded successfully');
+        window.location.href = '/profile';
+    } else {
+        console.error('Image upload failed');
+        throw new Error('Image upload failed');
+    }
+}
+function displayBlobImage(blob, targetElementId) {
+    const imgElement = document.createElement('img');
+
+    const reader = new FileReader();
+    reader.onload = function(event) {
+        imgElement.src = event.target.result;
+
+        imgElement.style.maxWidth = '100%'; 
+
+        const targetElement = document.getElementById(targetElementId);
+
+        targetElement.appendChild(imgElement);
+    };
+
+    reader.readAsDataURL(blob);
+}
+
+</script>

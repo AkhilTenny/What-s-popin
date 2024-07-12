@@ -72,12 +72,18 @@ router.get('/edit-account',function(req,res){
 router.post('/edit-account',function(req,res){
   if(req.body.username){
     userHealpers.changeUsername(req.session.passport.user.cryptoId,req.body.username )
+    req.session.passport.user.username = req.body.username;
   }if(req.body.bio){
     userHealpers.changeUserBio(req.session.passport.user.cryptoId,req.body.bio )
 
   }
   res.redirect('/profile')
 })
+
+router.get('/edit-dp',function(req,res){
+  res.render('users/edit-dp')
+})
+
 
 
 module.exports = router;
