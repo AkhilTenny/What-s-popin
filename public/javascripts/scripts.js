@@ -1,6 +1,5 @@
 
-  // If using Node.js
-
+ 
 $(document).ready(function(){
   $("#profilePic").click(function(){
   

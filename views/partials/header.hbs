@@ -1,8 +1,8 @@
 <nav class="navbar bg-body-tertiary">
   <div class="container-fluid">
     <a class="navbar-brand">Navbar</a>
-    <form class="d-flex" role="search">
-      <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+    <form class="d-flex" id="searchForm">
+      <input class="form-control me-2" id="search" name="search" type="search" placeholder="Search" aria-label="Search">
       <button class="btn btn-outline-success" type="submit">Search</button>
     </form>
     <div class="icon-div">
@@ -21,7 +21,7 @@
   </div>
 </nav>
 
-
+{{!-- login model --}}
 <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog" style="border-radius: 40px;" role="document">
     <div class="modal-content" style="background-color: aliceblue;">
@@ -48,4 +48,18 @@
     </div>
   </div>
 </div>
-  
+
+{{!-- search model --}}
+  <script>
+
+    document.getElementById("searchForm").addEventListener("submit",async(event)=>{
+      event.preventDefault();
+
+      const searchTerm = document.getElementById("search").value
+            console.log(searchTerm)
+
+            const response = await fetch(`/search/${encodeURIComponent(searchTerm)}`);
+            console.log(await response.json())
+    })
+
+  </script>

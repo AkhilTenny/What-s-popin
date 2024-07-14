@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const crypto = require('crypto');
 const bcrypt = require("bcrypt");
+const passport = require('passport');
 
 const userSchema = new mongoose.Schema({
   username:String,
@@ -77,11 +78,30 @@ function changeUsername(userCryptoId,newUsername){
     resolve(updatedUser)
   })
 }
+function searchUsers(searchTerm){
+  return new Promise(async(resolve,reject)=>{
+    const regex = new RegExp(searchTerm, 'i'); 
+
+    users = await userModel.find({username:regex})
+    const sanitizedUsers = users.map(({password, ...rest})=>rest)
+    
+    if(users){
+      resolve(sanitizedUsers);
+
+
+    }else{
+      reject("error")
+    }
+
+
+  })
+}
 
 module.exports= {
     addUser,
     authenticateUser,
     getUserInfo,
     changeUserBio,
-    changeUsername
+    changeUsername,
+    searchUsers
   }

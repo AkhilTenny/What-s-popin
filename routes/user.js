@@ -85,5 +85,13 @@ router.get('/edit-dp',function(req,res){
 })
 
 
+router.get("/search/:searchTerm",(req,res)=>{
+  userHealpers.searchUsers(req.params.searchTerm).then((users)=>{
+    res.json(users)
+  }) .catch((err)=>{
+    res.json(err)
+  })
+})
+
 
 module.exports = router;
