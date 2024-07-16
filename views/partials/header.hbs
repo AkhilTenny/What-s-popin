@@ -1,10 +1,8 @@
 <nav class="navbar bg-body-tertiary">
   <div class="container-fluid">
     <a class="navbar-brand">Navbar</a>
-    <form class="d-flex" id="searchForm">
-      <input class="form-control me-2" id="search" name="search" type="search" placeholder="Search" aria-label="Search">
-      <button class="btn btn-outline-success" type="submit">Search</button>
-    </form>
+      <button class="btn btn-outline-success" id="searchBtn" >Search</button>
+    
     <div class="icon-div">
 {{#if user.passport.user}}
  <div class="profile-div my-card ">
@@ -50,16 +48,34 @@
 </div>
 
 {{!-- search model --}}
+  <div class="modal fade" id="searchModel" role="dialog">
+    <div class="modal-dialog col-lg-6" role="document" style="background-color: rgb(241, 241, 241)"role="document">
+      <div class="modal-content p-2"  >
+        <button type="button" class="btn-close mb-4" data-bs-dismiss="modal" aria-label="Close"></button>
+
+            <div class="d-flex" id="searchForm">
+            <input class="form-control me-2" id="search" name="search"  placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success" id="userSearchBtn">Search</button>
+          </div>
+        <div class="found-users-div" id="foundUsersDiv">
+          
+        </div>
+        
+        </div>
+             
+      </div>
+      
+    </div>
+    </div>
+
+ 
   <script>
+  document.getElementById("userSearchBtn").addEventListener("click",function(){
+      const searchTerm = document.getElementById("search").value;
+      find.findUsersAjax(searchTerm)
 
-    document.getElementById("searchForm").addEventListener("submit",async(event)=>{
-      event.preventDefault();
+  })
 
-      const searchTerm = document.getElementById("search").value
-            console.log(searchTerm)
-
-            const response = await fetch(`/search/${encodeURIComponent(searchTerm)}`);
-            console.log(await response.json())
-    })
-
+   
+   
   </script>

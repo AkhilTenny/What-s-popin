@@ -85,12 +85,19 @@ router.get('/edit-dp',function(req,res){
 })
 
 
-router.get("/search/:searchTerm",(req,res)=>{
-  userHealpers.searchUsers(req.params.searchTerm).then((users)=>{
+router.post("/find-users",(req,res)=>{
+  userHealpers.searchUsers(req.body.searchTerm).then((users)=>{
     res.json(users)
   }) .catch((err)=>{
+
     res.json(err)
   })
+})
+
+router.get("/p/:username",async function(req,res){
+  const userInfo = await userHealpers.findUser(req.params.username)
+  const userPosts = await postHelpers.getUserPosts(userInfo._doc.cryptoId)
+  res.render("users/userProfile",{userInfo:userInfo,userPosts:userPosts})
 })
 
 
