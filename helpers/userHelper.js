@@ -3,6 +3,7 @@ const crypto = require('crypto');
 const bcrypt = require("bcrypt");
 const passport = require('passport');
 const { userInfo } = require('os');
+const { resolve } = require('path');
 
 const userSchema = new mongoose.Schema({
   username:String,
@@ -13,7 +14,9 @@ const userSchema = new mongoose.Schema({
   interests:{
     type:[String],
     require:true
-  }
+  },
+  followers:[String],
+  following:[String]
 })
 
 const userModel = mongoose.model("users",userSchema) 
@@ -33,7 +36,7 @@ async function addUser( userData,userInterests){
     emailId: userData.emailId,
     password: hashPass,
     cryptoId: uniqueId,
-    interests:userInterests
+    interests:userInterests,
 
   })
   await newUser.save()
@@ -101,7 +104,119 @@ function searchUsers(searchTerm){
    userInfo.password = null;
    return(userInfo)
 }
+async function getUserBio(cryptoId){
+  const bio = await userModel.findOne({cryptoId:cryptoId}).select('bio')
+  return bio.bio
+}
 
+async function checkUsername(username){
+  const user = await userModel.findOne({username:username})
+  if(user){
+    return true
+  }else{
+    return false
+  }
+}
+function addFollower(userCryptoId,sessionUsername){
+  return new Promise(async(resolve,reject)=>{
+    const sessionUserFollowing = await userModel.aggregate([
+      {
+        $match: {
+          username: sessionUsername,
+        },
+      },{
+        $unwind: {
+          path: "$following"
+      }},
+      {
+        $project: {
+          "following":"$following"
+        }
+      }
+    ])
+    const following = sessionUserFollowing.map(item => item.following)
+    const CryptoUser = await userModel.findOne({cryptoId:userCryptoId})
+    if(following.includes(CryptoUser.username)){
+      console.log("if",CryptoUser.username)
+      reject(false)
+    }else{
+      console.log("else",CryptoUser.username)
+
+      await userModel.findOneAndUpdate({cryptoId:userCryptoId},{
+        $push:{followers:sessionUsername}   }, 
+        { new: true, useFindAndModify: false }
+       )
+      await userModel.findOneAndUpdate({username:sessionUsername},
+       { $push:{following:CryptoUser.username}}
+      )
+      resolve(true)
+    }
+
+   
+  }
+) 
+} 
+function findFollowing(pageUser,currentUser){
+  return new Promise(async(resolve,reject)=>{
+    const following = await userModel.aggregate(
+      [
+        {
+          $match: {
+            username:currentUser,
+          },
+        },
+        {
+          $unwind: {
+            path: "$following",
+          },
+        },
+        {
+          $project: {
+            followings: "$following",
+          },
+        },
+      ]
+    )
+    const result = following.map(item => item.followings) 
+    if(result.includes(pageUser)){
+      resolve(true)
+    }else{
+      resolve(false)
+    }
+
+
+  })
+}function followersCount(username){
+  return new Promise(async(resolve,reject)=>{
+    const count = await userModel.aggregate([
+      {
+        $match: {
+          username: "akhil_tenny",
+        },
+      },
+      {
+        $unwind: {
+          path: "$followers",
+        },
+      },
+      {
+        $count: "count",
+      },
+    ])
+    resolve(count.map(item=>item.count))
+})}
+
+function removeFollower(userCryptoId,sessionUsername){
+  return new Promise(async(resolve,reject)=>{
+    const CryptoUser = await userModel.findOne({cryptoId:userCryptoId})
+    await userModel.findOneAndUpdate({cryptoId:userCryptoId},{
+      $pull:{followers:sessionUsername}   }
+     )
+     await userModel.findOneAndUpdate({username:sessionUsername},
+      { $pull:{following:CryptoUser.username}}
+     )
+  })
+}
 module.exports= {
     addUser,
     authenticateUser,
@@ -110,5 +225,11 @@ module.exports= {
     changeUsername,
     searchUsers,
     findUser,
+    getUserBio,
+    checkUsername,
+    addFollower,
+    findFollowing,
+    followersCount, 
+    removeFollower
 
   }

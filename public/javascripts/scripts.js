@@ -38,7 +38,6 @@ class handleClick{
 
       })
     }
-   
   
 }class find{ 
   findUsersAjax(searchTerm){
@@ -94,6 +93,37 @@ function displaySearchResults(users){
   noResultsDiv.innerHTML = "<h4>no results found</h4>"
   document.getElementById("foundUsersDiv").appendChild(noResultsDiv)
 }
-window.indClick = new handleClick();
-window.find = new find();
+function openPost(postCryptoId){
+  window.location.href = '/u/'+postCryptoId;
+}
+function followUser(userCryptoId){
+  $.ajax({
+    url:'/follow-user',
+    method:"post",
+    data:{userCryptoId:userCryptoId},
+    success:function(result){
+      if(result){
+        $("#followBtn").text("following")
+        $("#followBtn").attr("class","btn-secondary btn follow-btn")
+ }
+
+    }
+  })
+}function unfollowUser(userCryptoId){
+  $.ajax({
+    url:'/unfollow-user',
+    method:"post",
+    data:{userCryptoId:userCryptoId},
+    success:function(result){
+      if(result){
+        $("#followBtn").text("follow")
+        $("#followBtn").attr("class","btn-primary btn follow-btn")
+        console.log(result)
+      }
+    }
+  })
+}
+
+const indClick = new handleClick();
+const findfun = new find();
 

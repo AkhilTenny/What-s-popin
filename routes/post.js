@@ -49,7 +49,6 @@ router.post('/add-post',uploadPost.single("file"),async(req,res)=>{
 })
 
 router.post("/edit-dp",uploadDp.single("file"),function(req,res){
-  console.log("haida kanna")
   res.redirect('/profile')
 
 

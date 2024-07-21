@@ -6,12 +6,13 @@
 
         <div class="form-group">
             <label for="exampleInputEmail1">Change Username</label>
-            <input type="text" class="form-control" name="username" id="inputfield1" aria-describedby="emailHelp" placeholder="Enter username">
+            <input type="text" class="form-control" name="username" value="{{username}}" id="inputfield1" aria-describedby="emailHelp" placeholder="Enter username">
             <span id="userNameWarning" style="visibility: hidden;"> &#9888; can't use spaces for username</span>
+            <span id="userAlreadyNameWarning" style="visibility: hidden;"> &#9888; this username already Exists</span>
         </div>
         <div class="form-group">
             <label for="exampleInputEmail1">Change Bio</label>
-            <input type="text" class="form-control" name="bio" id="inputfield2" aria-describedby="emailHelp" placeholder="Enter bio">
+            <input type="text" class="form-control" name="bio" value="{{userBio}}" id="inputfield2" aria-describedby="emailHelp" placeholder="Enter bio">
         </div>
         <div class="mt-3 text-center"> 
           <button type="submit" id="btnSubmit" class="btn btn-secondary" disabled>Save Changes</button>
@@ -23,14 +24,34 @@
       
 </div>
 <script>
-  const inputField2 = document.getElementById("inputfield2")
-  const inputField1 = document.getElementById("inputfield1")
+ 
+  let inputField2 = document.getElementById("inputfield2")
+  let inputField1 = document.getElementById("inputfield1")
   const userNameWarning = document.getElementById("userNameWarning")
+  const userAlreadyNameWarning = document.getElementById("userAlreadyNameWarning")
+  let usernamech = true ;
 
-
+ 
   const submitBtn = document.getElementById("btnSubmit")
-  function checkInputs(){
-    if(inputField1.value.trim() != '' || inputField2.value.trim() != '' ){
+  async function checkInputs(){
+   await $.ajax({
+      url:'/check-username',
+      method:"post",
+      data:{username:inputField1.value},
+      success:function(result){
+        console.log(result)
+        if(result){
+          userAlreadyNameWarning.style.visibility = "visible"
+          usernamech = result
+        }else{
+          userAlreadyNameWarning.style.visibility = "hidden"
+          usernamech = result
+
+
+        }
+      }
+    })
+    if(inputField1.value.trim() != '' || inputField2.value.trim() != ''){
       
       submitBtn.disabled = false
     }else{
@@ -40,6 +61,9 @@
       userNameWarning.style.visibility = "visible"
     }else{
       userNameWarning.style.visibility = "hidden"
+
+    }if(usernamech){
+            submitBtn.disabled = true
 
     }
   }

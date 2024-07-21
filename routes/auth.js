@@ -24,9 +24,13 @@ passport.deserializeUser(function(user,callback){
 
 router.post('/sign-in',passport.authenticate('local',{
 
-  successRedirect: '/',
-  failureRedirect: '/login'
+    successRedirect: '/',
+    failureRedirect: '/wrong-in'
   
 }))
+
+router.get('/wrong-in',(req,res)=>{
+  alert("wrong")
+})
 
 module.exports = router;

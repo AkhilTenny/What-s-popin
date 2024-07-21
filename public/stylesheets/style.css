@@ -118,7 +118,6 @@ border: 1px solid rgb(0, 0, 0);
 }.post-bar-div{
   height: 30px;
   
-}.post-div{
 }
 .post-img-div {
   width: 300px; /* Set your desired width (square) */
@@ -186,5 +185,35 @@ border: 1px solid rgb(0, 0, 0);
 }.no-decoration{
   color:rgb(3, 3, 3);
   text-decoration: none;
-}
+}.follow-btn{
+  margin-left: 100px;
+}.messeage-btn{
+  margin-left: 5px;
+}.post-div{
+  cursor: pointer ;
+}.post-dp-div{
+
+  height: 70px;
+  width: 70px;
+}.post-view-div{
+  margin: auto;
+}.post-username-div{
+  margin-left:19px;
+  width: 100%;
+}.post-userinfo-div{
+  display: flex;
+  align-items: center;
+  width: 100%;
+  
+}.post-actions-div{
+  margin-left: 10px;
+  display: flex;
+  width: 50%;
+}.post-action-div{
+   margin-right: 20px;
+
+  }.post-caption-div{
+    width: 100%;
+    
+  }
  

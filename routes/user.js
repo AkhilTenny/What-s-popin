@@ -6,7 +6,6 @@ var postHelpers = require("../helpers/postHelpers.js")
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', { user: req.session});
- 
 });
 
 
@@ -65,8 +64,11 @@ router.get("/add-post",function(req,res){
   console.log(req.params.crytoId)
   res.render('users/new-post',{ user: req.session})
 })
-router.get('/edit-account',function(req,res){
-  res.render('users/edit-account')
+router.get('/edit-account',async(req,res)=>{
+  
+  const userBio = await userHealpers.getUserBio(req.session.passport.user.cryptoId)
+  const username = req.session.passport.user.username
+  res.render('users/edit-account',{userBio:userBio,username:username})
 })
 
 router.post('/edit-account',function(req,res){
@@ -97,8 +99,42 @@ router.post("/find-users",(req,res)=>{
 router.get("/p/:username",async function(req,res){
   const userInfo = await userHealpers.findUser(req.params.username)
   const userPosts = await postHelpers.getUserPosts(userInfo._doc.cryptoId)
-  res.render("users/userProfile",{userInfo:userInfo,userPosts:userPosts})
+  let userFollow
+  if(req.session.passport){
+    await userHealpers.findFollowing(req.params.username,req.session.passport.user.username)
+    .then(value=>{
+     userFollow = value
+    })
+  }console.log
+
+ const followCount = await userHealpers.followersCount(req.params.username);
+ console.log(followCount)
+ res.render("users/userProfile",{userInfo:userInfo,userPosts:userPosts,userFollow:userFollow,followCount :followCount })
+})
+router.post('/check-username',async(req,res)=>{
+  const user = await userHealpers.checkUsername(req.body.username)
+  res.json(user)
+})
+router.get('/u/:postCryptoId',async(req,res)=>{
+  const postInfo = await postHelpers.getPostInfo(req.params.postCryptoId)
+  const userInfo = await userHealpers.getUserInfo(postInfo.userCryptoId)
+  console.log(postInfo)
+  res.render("users/view-post",{postInfo:postInfo,userInfo:userInfo})
+})
+router.post('/follow-user',async(req,res)=>{
+  await userHealpers.addFollower(req.body.userCryptoId,req.session.passport.user.username).then(value=>{
+    res.json(value)
+  }).catch(value=>{
+    res.json(value)
+  })
 })
 
+router.post("/unfollow-user",async(req,res)=>{
+  console.log("get") 
+ await  userHealpers.removeFollower(req.body.userCryptoId,req.session.passport.user.username).then(value=>{
+    res.json(value)
+  }) 
+  res.json("value")
+})
 
 module.exports = router;

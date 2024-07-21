@@ -56,10 +56,17 @@ function getUserPosts(userCryptoId){
     resolve(userPosts)
   })
 }
+function getPostInfo(postCryptoId){
+  return  new Promise(async(resolve,reject)=>{
+    const post = await Post.findOne({postCryptoId:postCryptoId})
+    resolve(post)
+  })
+}
 
 module.exports = {
   getUploadPath,
   getExtension,
   savePost,
   getUserPosts,
+  getPostInfo,
 }
