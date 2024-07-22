@@ -54,7 +54,7 @@ router.post("/logout",function(req,res,next){
 router.post("/save-user",function(req,res){
   
   const interests = JSON.parse(req.body.interests)
-  const userDatas = req.session.userData
+  const userDatas = req.session.userData 
   
   userHealpers.addUser(userDatas,interests)
 
@@ -89,7 +89,7 @@ router.get('/edit-dp',function(req,res){
 
 router.post("/find-users",(req,res)=>{
   userHealpers.searchUsers(req.body.searchTerm).then((users)=>{
-    res.json(users)
+    res.json(users) 
   }) .catch((err)=>{
 
     res.json(err)
@@ -122,11 +122,14 @@ router.get('/u/:postCryptoId',async(req,res)=>{
   res.render("users/view-post",{postInfo:postInfo,userInfo:userInfo})
 })
 router.post('/follow-user',async(req,res)=>{
-  await userHealpers.addFollower(req.body.userCryptoId,req.session.passport.user.username).then(value=>{
-    res.json(value)
-  }).catch(value=>{
-    res.json(value)
-  })
+  if(req.session.passport.user){
+    await userHealpers.addFollower(req.body.userCryptoId,req.session.passport.user.username).then(value=>{
+      res.json(value)
+    }).catch(value=>{
+      res.json(value)
+    })
+  }
+  
 })
 
 router.post("/unfollow-user",async(req,res)=>{
@@ -134,7 +137,6 @@ router.post("/unfollow-user",async(req,res)=>{
  await  userHealpers.removeFollower(req.body.userCryptoId,req.session.passport.user.username).then(value=>{
     res.json(value)
   }) 
-  res.json("value")
 })
 
 module.exports = router;

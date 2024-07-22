@@ -215,7 +215,9 @@ function removeFollower(userCryptoId,sessionUsername){
      await userModel.findOneAndUpdate({username:sessionUsername},
       { $pull:{following:CryptoUser.username}}
      )
-  })
+     resolve(true)
+  }
+)
 }
 module.exports= {
     addUser,

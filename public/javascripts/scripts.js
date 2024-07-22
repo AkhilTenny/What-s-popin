@@ -118,7 +118,6 @@ function followUser(userCryptoId){
       if(result){
         $("#followBtn").text("follow")
         $("#followBtn").attr("class","btn-primary btn follow-btn")
-        console.log(result)
       }
     }
   })
