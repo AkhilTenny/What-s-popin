@@ -5,12 +5,22 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const mongooseFile = require('./config/connection.js')
 const passport = require('passport');
+const port = process.env.PORT || 5000; //Line 3
+
+
+
+var app = express();
+
 
 
 var userRouter = require('./routes/user');
 var adminRouter = require('./routes/admin');
 var authRouter = require('./routes/auth');
-var postRouter = require('./routes/post')
+var postRouter = require('./routes/post');
+var {router:chatRouter,socketapi} = require('./routes/chat');
+
+
+
 
 var express     = require( 'express');
 const session = require('express-session');
@@ -19,7 +29,6 @@ var hbs         = require( 'express-handlebars' );
 const MongoStore = require('connect-mongo');
 
 
-var app = express();
 
 // Middleware to parse JSON bodies
 app.use(bodyParser.json());
@@ -67,6 +76,8 @@ app.use('/admin', adminRouter);
 app.use('/', userRouter);
 app.use('/',authRouter);
 app.use('/',postRouter);
+app.use('/chat',chatRouter)
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

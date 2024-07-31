@@ -2,7 +2,6 @@
  
 $(document).ready(function(){
   $("#profilePic").click(function(){
-  
     $("#myModal").modal("show");
   });
   $("#searchBtn").click(function(){
@@ -122,7 +121,77 @@ function followUser(userCryptoId){
     }
   })
 }
+async function changeChatUser(cryptoId){
+  $.ajax({
+    url:'chat/changeChatUser',
+    method:"post",
+    data:{newUserCryptoId:cryptoId},
+    success: function(result){
+     ;//change the userInfo 
+      $('#chatUserDp').attr("src",'images/users/profilePictures/'+result.userInfo.cryptoId+'.jpg')
+      $('#chatUsername').text(result.userInfo.username)
+      $('#chatArea').html('');
+      $('#chatArea').attr("data-value",result.userInfo.username)
+      //change the chats
+      const messageContainer = document.getElementById("chatArea")
+      result.messages.forEach(message =>{
+        if(result.userInfo.username === message.to){
+          const messageDiv =  document.createElement('div')
+          messageDiv.classList.add("chat-to-div")
+
+          
+          const messageBubble =  document.createElement('div')
+          messageBubble.innerHTML = `<h4>${message.message}</h4>` 
+          messageBubble.classList.add("chat-to-bubble")
+
+          messageContainer.appendChild(messageDiv);
+          messageDiv.appendChild(messageBubble)
+
+        }else{
+          const messageDiv =  document.createElement('div')
+          messageDiv.classList.add("chat-to-div")
+
+
+          const messageBubble =  document.createElement('div')
+          messageBubble.innerHTML = `<h4>${message.message}</h4>` 
+          messageBubble.classList.add("chat-from-bubble")
+
+      messageContainer.appendChild(messageDiv);
+      messageDiv.appendChild(messageBubble)
+
+       
+        }
+
+      })    
+          messageContainer.scrollTop = messageContainer.scrollHeight;
+
+    }
+
+  })
+
+}
+
+function displayNewMessage(message,direction){
+  const messageContainer = document.getElementById("chatArea")
+
+  const messageDiv =  document.createElement('div')
+  messageDiv.classList.add("chat-to-div")
+
+  
+  const messageBubble =  document.createElement('div')
+  messageBubble.innerHTML = `<h4>${message}</h4>` 
+  messageBubble.classList.add(`chat-${direction}-bubble`)
+
+messageContainer.appendChild(messageDiv);
+messageDiv.appendChild(messageBubble)
+
+//scroll
+messageContainer.scrollTop = messageContainer.scrollHeight;
+
+
+}
 
 const indClick = new handleClick();
 const findfun = new find();
 
+ 

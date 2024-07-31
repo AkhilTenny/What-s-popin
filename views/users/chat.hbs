@@ -1,0 +1,120 @@
+
+<div class="container">
+  <div class="row g-0 mr-1">
+      
+    <div class="col-lg-3 col-md-1"> 
+        <div class="admin-div-chat col-lg-12 no-padding">
+          <div class="admin-chat-div mt-3">
+            <div class="admin-chat-dp-div">
+              <img style="border-radius: 100%;" width="100%" src="images/users/profilePictures/{{userInfo._doc.cryptoId}}.jpg" alt="">
+            </div>
+            <div class="admin-chat-username-div">
+              <h4 >{{userInfo._doc.username}}</h4>
+            </div>
+            <div class="chat-find-users-div">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-people-fill" viewBox="0 0 16 16">
+                 <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5.784 6A2.24 2.24 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.3 6.3 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5"/>
+              </svg>
+            </div>
+          </div>
+      </div>
+
+
+      <div class="users-div col-lg-12  no-padding">
+        {{#each following}}
+        <div class="user-list-div mt-3" onclick="changeChatUser('{{this.cryptoId}}')">
+          <div class="user-list-dp-div">
+            <img style="border-radius: 100%; " width="100%" src="images/users/profilePictures/{{this.cryptoId}}.jpg" alt="">
+          </div>
+          <div class="user-list-username-div">
+            <h3 >{{this.username}}</h3>  
+          </div> 
+        </div>
+        {{/each}}
+      </div>
+
+      </div>
+
+      <div class="chat-div col-lg-9 col-md-10">
+        <div class="chat-user-info mt-3 col-lg-12">
+            <div class="chat-user-dp-div">
+              {{!-- here --}}
+               <img id="chatUserDp" style="border-radius: 100%;" width="100%" src="" alt="">
+            </div>
+            <div class="chat-user-username-div">
+              {{!-- here --}}
+              <h2 id="chatUsername" style="margin: auto;">akhil tenny</h2>
+            </div>
+        </div>
+
+     
+
+    <div id="chatArea" data-value="" class="chat-area-div">
+
+    </div>
+
+         
+      <div class="chat-input-div  ">
+        
+         <input id="input"  type="text" class="form-control mb-3 " style="width: 90%;" placeholder="Enter Message" aria-label="Recipient's username" aria-describedby="basic-addon2">
+          <div class="chat-sent-btn-div">
+             <button onclick="sentTxt()" class="btn btn-light  mb-3 ">
+              sent
+        </button>
+          </div>
+       
+      </div>
+        
+      </div>
+  </div>
+
+</div>
+        <script src="/socket.io/socket.io.js"></script>
+
+
+ <script>
+      var socket = io();
+      const username = '{{userInfo._doc.username}}';
+      socket.emit('online',username)
+      console.log(username)
+      function sentTxt(){
+          
+          const message =   document.getElementById("input").value
+          const to = document.getElementById('chatUsername').innerText
+          socket.emit("privet-message",{to,message,username});
+          displayNewMessage(message,"to");
+
+          
+      }
+      socket.on('privet-message',(data)=>{
+        console.log(JSON.stringify(data))
+       
+       if(document.getElementById("chatArea").getAttribute('data-value') == data.from){
+          data.readStatus = "read";
+          fetch('chat/save-message-db',{
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+          }) 
+         displayNewMessage(data.message,"from");
+
+       }else{
+        data.readStatus = "unread";
+
+        fetch('chat/save-message-db',{
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+          }) 
+       }
+       
+       
+      }) 
+
+
+  </script>
+

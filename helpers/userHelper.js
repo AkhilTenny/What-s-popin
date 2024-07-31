@@ -62,6 +62,7 @@ async function authenticateUser(username,password){
 function getUserInfo(userCryptoId){
   return new Promise(async(resolve,reject)=>{
     const userInfo = await userModel.findOne({cryptoId:userCryptoId})
+    userInfo.password = null
     resolve(userInfo)
   })
 }
@@ -101,7 +102,6 @@ function searchUsers(searchTerm){
   })
 }async function findUser(username){
    let userInfo =await userModel.findOne({username:username})
-   userInfo.password = null;
    return(userInfo)
 }
 async function getUserBio(cryptoId){
